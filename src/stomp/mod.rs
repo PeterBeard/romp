@@ -7,6 +7,11 @@ use std::char;
 use std::str;
 use std::fmt::{self, Display};
 
+pub mod parse;
+
+pub const PROTO_VERS: &'static str = "1.2";         // Supported protocol version
+pub const SERVER_STR: &'static str = "Romp/0.1";    // Server version string
+
 // Possible STOMP commands
 #[derive(Debug, PartialEq)]
 pub enum StompCommand {
@@ -161,12 +166,13 @@ impl Frame {
     // Create a frame with the given command and body
     // Automatically adds content-length header
     pub fn with_body(c: StompCommand, b: &str) -> Frame {
-        let f = Frame {
+        let mut f = Frame {
             command: c,
             header: Header::new(),
             body: String::from(b),
         };
         f.header.set("content-length", &b.len().to_string()[..]);
+        f
     }
 
     // Represent a frame as a String
